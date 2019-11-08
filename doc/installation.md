@@ -87,6 +87,7 @@ The scripts and commands below invoke `wget, git, add-apt-repository` which may 
       `./scripts/patch-realsense-ubuntu-odroid.sh`<br />
       
       Some additional details on the Odroid installation can also be found in [installation_odroid.md](installation_odroid.md)
+      Don't use `patch-realsense-ubuntu-odroid-4.14.sh` on Ubuntu16, even if 4.14 is your kernel version.
 
 > Check the patched modules installation by examining the generated log as well as inspecting the latest entries in kernel log:<br />
       `sudo dmesg | tail -n 50`<br />

@@ -23,7 +23,17 @@ fi
 source ./scripts/patch-utils.sh
 
 # Get the required tools and headers to build the kernel
-sudo apt-get install linux-headers-generic build-essential git
+sudo apt-get install build-essential git
+# Odroid's Ubuntu16.04 has a Kernel 4.14, but linux-headers-generic is on 4.4
+# Only install specific kernel headers, if that is the case.
+LINUX_BRANCH=$(uname -r)
+UBUNTU_VERSION_NUM=$(grep DISTRIB_RELEASE /etc/lsb-release | cut -f2 -d'=')
+if [[ "$UBUNTU_VERSION_NUM" == 16.04 && "$LINUX_BRANCH" == 4.14* ]];
+then
+  sudo apt-get install linux-headers-$(uname -r)
+else
+  sudo apt-get install linux-headers-generic
+fi
 
 #Packages to build the patched modules
 require_package libusb-1.0-0-dev
@@ -94,11 +104,11 @@ then
 else
 	# Patching kernel for RealSense devices
 	echo -e "\e[32mApplying realsense-uvc patch\e[0m"
-	patch -p1 < ../scripts/realsense-camera-formats_ubuntu-${ubuntu_codename}-${kernel_branch}.patch
+	patch -p1 < ../scripts/realsense-camera-formats-${ubuntu_codename}-${kernel_branch}.patch
 	echo -e "\e[32mApplying realsense-metadata patch\e[0m"
-	patch -p1 < ../scripts/realsense-metadata-ubuntu-${ubuntu_codename}-${kernel_branch}.patch
+	patch -p1 < ../scripts/realsense-metadata-${ubuntu_codename}-${kernel_branch}.patch
 	echo -e "\e[32mApplying realsense-hid patch\e[0m"
-	patch -p1 < ../scripts/realsense-hid-ubuntu-${ubuntu_codename}-${kernel_branch}.patch
+	patch -p1 < ../scripts/realsense-hid-${ubuntu_codename}-${kernel_branch}.patch
 	echo -e "\e[32mApplying realsense-powerlinefrequency-fix patch\e[0m"
 	patch -p1 < ../scripts/realsense-powerlinefrequency-control-fix.patch
 fi
